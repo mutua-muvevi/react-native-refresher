@@ -6,13 +6,15 @@ import { images } from "../../constants";
 import SearchInput from "../../components/SearchInput";
 import Trending from "../../components/Trending";
 import EmptyState from "../../components/EmptyState";
-import { getAllPost } from "../../lib/appwrite";
+import { getAllPost, getLatestPost } from "../../lib/appwrite";
 import useAppwrite from "../../lib/useAppwrite";
 import VideoCard from "../../components/VideoCard";
 
 const HomeScreen = () => {
-	const { data : posts, refetchData } = useAppwrite(getAllPost)
 	const [refreshing, setRefreshing] = useState(false);
+
+	const { data : posts, refetchData } = useAppwrite(getAllPost)
+	const { data : latestPosts } = useAppwrite(getLatestPost)
 
 
 	const onRefresh = async () => {
@@ -61,7 +63,7 @@ const HomeScreen = () => {
 							</Text>
 
 							<Trending
-								posts={[{ id: 1 }, { id: 2 }, { id: 3 }] ?? []}
+								posts={latestPosts ?? []}
 							/>
 						</View>
 					</View>
