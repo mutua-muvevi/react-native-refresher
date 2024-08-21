@@ -1,4 +1,11 @@
-import { View, Text, FlatList, Image, RefreshControl, Alert } from "react-native";
+import {
+	View,
+	Text,
+	FlatList,
+	Image,
+	RefreshControl,
+	Alert,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -9,13 +16,13 @@ import EmptyState from "../../components/EmptyState";
 import { getAllPost, getLatestPost } from "../../lib/appwrite";
 import useAppwrite from "../../lib/useAppwrite";
 import VideoCard from "../../components/VideoCard";
+import { StatusBar } from "expo-status-bar";
 
 const HomeScreen = () => {
 	const [refreshing, setRefreshing] = useState(false);
 
-	const { data : posts, refetchData } = useAppwrite(getAllPost)
-	const { data : latestPosts } = useAppwrite(getLatestPost)
-
+	const { data: posts, refetchData } = useAppwrite(getAllPost);
+	const { data: latestPosts } = useAppwrite(getLatestPost);
 
 	const onRefresh = async () => {
 		setRefreshing(true);
@@ -31,9 +38,7 @@ const HomeScreen = () => {
 			<FlatList
 				data={posts}
 				keyExtractor={(item) => item.$id}
-				renderItem={({ item }) => (
-					<VideoCard video={item}/>
-				)}
+				renderItem={({ item }) => <VideoCard video={item} />}
 				ListHeaderComponent={() => (
 					<View className="my-6 px-4 space-y-6">
 						<View className="justify-between items-start flex-row mb-6">
@@ -55,16 +60,14 @@ const HomeScreen = () => {
 							</View>
 						</View>
 
-						<SearchInput placeholder={"Search for a video topic"} />
+						<SearchInput />
 
 						<View className="w-full flex-1 pt-5 pb-8">
 							<Text className="text-gray-100 text-lg font-pregular mb-3">
 								Latest Videos
 							</Text>
 
-							<Trending
-								posts={latestPosts ?? []}
-							/>
+							<Trending posts={latestPosts ?? []} />
 						</View>
 					</View>
 				)}
@@ -81,6 +84,8 @@ const HomeScreen = () => {
 					/>
 				}
 			/>
+
+			<StatusBar backgroundColor="#161622" style="light" />
 		</SafeAreaView>
 	);
 };
