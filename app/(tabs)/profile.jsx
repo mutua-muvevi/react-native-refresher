@@ -3,21 +3,27 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import EmptyState from "../../components/EmptyState";
-import { getUserPost } from "../../lib/appwrite";
+import { getUserPost, signOut } from "../../lib/appwrite";
 import useAppwrite from "../../lib/useAppwrite";
 import VideoCard from "../../components/VideoCard";
 import { StatusBar } from "expo-status-bar";
 import { useGlobalContext } from "../../context/GlobalProvider";
 import { icons } from "../../constants";
 import InfoBox from "../../components/InfoBox";
+import { router } from "expo-router";
 
 const Profile = () => {
-	const { user, setUser, setIsloggedIn } = useGlobalContext();
+	const { user, setUser, setIsLoggedIn } = useGlobalContext();
 
 	const { data: posts } = useAppwrite(() => getUserPost(user.$id));
 
-	const logout = () => {
-		
+	const logout = async () => {
+		router.replace("/sign-in");
+
+		await signOut();
+		setUser(null);
+		setIsLoggedIn(false);
+
 	};
 
 	return (
