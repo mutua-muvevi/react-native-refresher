@@ -4,43 +4,45 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../../constants";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
-import { Link } from "expo-router";
-import { signIn } from "../../lib/appwrite";
+import { Link, router } from "expo-router";
+import { getCurrentUser, signIn } from "../../lib/appwrite";
+import { useGlobalContext } from "../../context/GlobalProvider";
 
 const SignIn = () => {
+	const { setUser, setIsLoggedIn } = useGlobalContext();
 	const [form, setform] = useState({
 		email: "",
-		password: ""
+		password: "",
 	});
 	const [isSubmiting, setIsSubmiting] = useState(false);
 
 	const submit = async () => {
 		if (!form.email || !form.password) {
-			Alert.alert("Error", "Please fill all the fields")
+			Alert.alert("Error", "Please fill all the fields");
 		}
 
-		setIsSubmiting(true)
+		setIsSubmiting(true);
 
 		try {
-			await signIn(
-				form.email,
-				form.password,
-			)
+			await signIn(form.email, form.password);
 
-			//set it to global state
+			const result = await getCurrentUser();
 
-			router.replace("/home")
+			setUser(result);
 
+			setIsLoggedIn(true);
+
+			router.replace("/home");
 		} catch (error) {
 
-			console.log(`Error while submitting register form : ${error}`)
-			Alert.alert("Error", error.message)
-			throw new Error(error)
+			console.log(`Error while submitting register form : ${error}`);
+			Alert.alert("Error", error.message);
+			throw new Error(error);
 
 		} finally {
-			setIsSubmiting(false)
+			setIsSubmiting(false);
 		}
-	}
+	};
 
 	return (
 		<SafeAreaView className="bg-primary h-full">
@@ -58,7 +60,9 @@ const SignIn = () => {
 					<FormField
 						title="Email"
 						value={form.email}
-						handleChangeText={(event) => setform({ ...form, email: event })}
+						handleChangeText={(event) =>
+							setform({ ...form, email: event })
+						}
 						otherStyles="mt-7"
 						keyboardType="email-address"
 					/>
@@ -66,7 +70,9 @@ const SignIn = () => {
 					<FormField
 						title="Password"
 						value={form.password}
-						handleChangeText={(event) => setform({ ...form, password: event })}
+						handleChangeText={(event) =>
+							setform({ ...form, password: event })
+						}
 						otherStyles="mt-7"
 					/>
 

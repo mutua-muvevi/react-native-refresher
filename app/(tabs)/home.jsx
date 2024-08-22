@@ -17,9 +17,11 @@ import { getAllPost, getLatestPost } from "../../lib/appwrite";
 import useAppwrite from "../../lib/useAppwrite";
 import VideoCard from "../../components/VideoCard";
 import { StatusBar } from "expo-status-bar";
+import { useGlobalContext } from "../../context/GlobalProvider";
 
 const HomeScreen = () => {
 	const [refreshing, setRefreshing] = useState(false);
+	const { user, setUser, setIsLoggedIn } = useGlobalContext();
 
 	const { data: posts, refetchData } = useAppwrite(getAllPost);
 	const { data: latestPosts } = useAppwrite(getLatestPost);
@@ -47,7 +49,7 @@ const HomeScreen = () => {
 									Welcome back
 								</Text>
 								<Text className="text-2xl font-psemibold text-white">
-									Joseph
+									{user?.username}
 								</Text>
 							</View>
 
